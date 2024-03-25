@@ -1,0 +1,17 @@
+
+version: '3'
+
+services:
+    postgres:
+        image: postgres:16.0
+        environment:
+            POSTGRES_DB: wallet
+            POSTGRES_USER: root
+            POSTGRES_PASSWORD: password
+        volumes:
+            - ./init.sql:/docker-entrypoint-initdb.d/init.sql
+        ports:
+            - "5432:5432"
+
+volumes:
+    pgdata:

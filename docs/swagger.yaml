@@ -1,0 +1,57 @@
+definitions:
+  wallet.Err:
+    properties:
+      message:
+        type: string
+    type: object
+  wallet.Wallet:
+    properties:
+      balance:
+        example: 100
+        type: number
+      created_at:
+        example: "2024-03-25T14:19:00.729237Z"
+        type: string
+      id:
+        example: 1
+        type: integer
+      user_id:
+        example: 1
+        type: integer
+      user_name:
+        example: John Doe
+        type: string
+      wallet_name:
+        example: John's Wallet
+        type: string
+      wallet_type:
+        example: Create Card
+        type: string
+    type: object
+host: localhost:1323
+info:
+  contact: {}
+  description: Sophisticated Wallet API
+  title: Wallet API
+  version: "1.0"
+paths:
+  /api/v1/wallets:
+    get:
+      consumes:
+      - application/json
+      description: Get all wallets
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/wallet.Wallet'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/wallet.Err'
+      summary: Get all wallets
+      tags:
+      - wallet
+swagger: "2.0"

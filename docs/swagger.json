@@ -1,0 +1,84 @@
+{
+    "swagger": "2.0",
+    "info": {
+        "description": "Sophisticated Wallet API",
+        "title": "Wallet API",
+        "contact": {},
+        "version": "1.0"
+    },
+    "host": "localhost:1323",
+    "paths": {
+        "/api/v1/wallets": {
+            "get": {
+                "description": "Get all wallets",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "wallet"
+                ],
+                "summary": "Get all wallets",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/wallet.Wallet"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/wallet.Err"
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "definitions": {
+        "wallet.Err": {
+            "type": "object",
+            "properties": {
+                "message": {
+                    "type": "string"
+                }
+            }
+        },
+        "wallet.Wallet": {
+            "type": "object",
+            "properties": {
+                "balance": {
+                    "type": "number",
+                    "example": 100
+                },
+                "created_at": {
+                    "type": "string",
+                    "example": "2024-03-25T14:19:00.729237Z"
+                },
+                "id": {
+                    "type": "integer",
+                    "example": 1
+                },
+                "user_id": {
+                    "type": "integer",
+                    "example": 1
+                },
+                "user_name": {
+                    "type": "string",
+                    "example": "John Doe"
+                },
+                "wallet_name": {
+                    "type": "string",
+                    "example": "John's Wallet"
+                },
+                "wallet_type": {
+                    "type": "string",
+                    "example": "Create Card"
+                }
+            }
+        }
+    }
+}
