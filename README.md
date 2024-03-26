@@ -15,19 +15,23 @@
 # Getting Started
 1. Clone the repository
 2. Open `fun-exercise-api` in your favorite Editor
-3. Run the following command to start the server
-	```bash
-	docker-compose up
+3. Before running the code, you need to make sure all of these tools are installed
+    - [x] Go
+    - [x] Docker
+    - [x] [Swag](#getting-started)
+4. Run the following command to start the server
+    ```bash
+    docker-compose up
 
-	go run main.go
-	```
-4. Open your browser and navigate to [http://localhost:1323/api/v1/wallets](http://localhost:1323/api/v1/wallets)
-5. You should see a list of wallets
-6. View Swagger documentation at [http://localhost:1323/swagger/index.html](http://localhost:1323/swagger/index.html)
-7. You should see the Swagger documentation for the API
+    go run main.go
+    ```
+5. Open your browser and navigate to [http://localhost:1323/api/v1/wallets](http://localhost:1323/api/v1/wallets)
+6. You should see a list of wallets
+7. View Swagger documentation at [http://localhost:1323/swagger/index.html](http://localhost:1323/swagger/index.html)
+8. You should see the Swagger documentation for the API
 <img src="./swagger.png" alt="Swagger Documentation" />
 
-8. We've created a simple database schema for Wallet `init.sql`
+9. We've created a simple database schema for Wallet `init.sql`
 
 ```mermaid
 erDiagram
@@ -52,12 +56,13 @@ erDiagram
 - [Challenge 5: API - Using Request Body to Create a Wallet](#challenge-5-api---using-request-body-to-create-a-wallet)
 - [Challenge 6: API - Using Request Body to Update a Wallet](#challenge-6-api---using-request-body-to-update-a-wallet)
 - [Challenge 7: API - Using Request Body to Delete a Wallet](#challenge-7-api---using-request-body-to-delete-a-wallet)
-- [Challenge 8.0: DevOps - Dockerize the App - Single Stage Dockerfile](#challenge-80-devops---dockerize-the-app---single-stage-dockerfile)
-- [Challenge 8.5: DevOps - Dockerize the App - Multi-Stage Dockerfile](#challenge-85-devops---dockerize-the-app---multi-stage-dockerfile)
+- [Challenge 8: DevOps - Dockerize the App - Multi-Stage Dockerfile](#challenge-8-devops---dockerize-the-app---multi-stage-dockerfile)
 - [Challenge 9: DevOps - Design a CI for running static code analysis and tests](#challenge-9-devops---design-a-ci-for-running-static-code-analysis-and-tests)
 
 ### Challenge 0: Display a list of wallets ✅
-- We've created a simple API that displays a list of wallets [http://localhost:1323/api/v1/wallets](http://localhost:1323/api/v1/wallets)
+We've prepared a simple API, database schema for Wallets, and Swagger documentation
+
+- Simple API that displays a list of wallets [http://localhost:1323/api/v1/wallets](http://localhost:1323/api/v1/wallets)
 - Connecting to a Postgres database and query all wallets from `user_wallet` table
 - Create Swagger documentation for the API via `swag init`
 - `wallet/handler.go` - You'll see the comments pattern that is used to generate the Swagger documentation
@@ -81,57 +86,131 @@ func (h *Handler) WalletHandler(c echo.Context) error {
 ```
 
 ### Challenge 1: API - Using environment variables
-12 Factors App - [Config](https://12factor.net/config) - Store config in the environment
+As a developer, we need to deploy the application on the cloud, we need to prepare the application and make it ready for the cloud environment.
+One of the best practices is to store the configuration in the environment variables.
+In 12 Factors App, it's recommended to store the configuration in the environment variables.
 
-- Jump to the `postgres` package
-- Edit `postgres/postgres.go` and replace the connection string
-- **Expectation**: No hardcode of the connection string in the code
+This challenge is to replace the hardcode of the connection string in the code with the environment variables.
+
+1. Jump to the `postgres` package
+2. Edit `postgres/postgres.go` and replace the connection string with the environment variables instead.
+
+#### Expectation
+```
+No hardcode of the connection string in the code
+```
 
 
 ### Challenge 2: API - Write Unit Test for /ap/v1/wallets
-- Jump to the `wallet_test.go` file in the `wallet` package
-- We've created draft of the test cases
-- We need to implement the test cases and learn how to break dependency by **Test Double**
-```go
-func TestWallet(t *testing.T) {
-	t.Run("given unable to get wallets should return 500 and error message", func(t *testing.T) {
+As a developer, we need to make sure the code is working as expected.
 
-	})
+This challenge is to write a unit test for the `/api/v1/wallets` endpoint and practice how to **Test Double**.
 
-	t.Run("given user able to getting wallet should return list of wallets", func(t *testing.T) {
+1. Jump to the `wallet_test.go` file in the `wallet` package
+2. We've created draft of the test cases
+3. We need to implement the test cases and learn how to break dependency by **Test Double**
+	```go
+	func TestWallet(t *testing.T) {
+		t.Run("given unable to get wallets should return 500 and error message", func(t *testing.T) {
 
-	})
-}
+		})
+
+		t.Run("given user able to getting wallet should return list of wallets", func(t *testing.T) {
+
+		})
+	}
+	```
+4. Run the test cases `go test -v ./...`
+5. You can see an example [coaching-week-3](https://github.com/KKGo-Software-engineering/coaching-session/blob/main/week-3/product/product_test.go)
+
+#### Expectation
 ```
-- Run the test cases `go test -v ./...`
-- **Expectation**: **Test Double** should be used to break the dependency for those test cases
-- You can see an example [coaching-week-3](https://github.com/KKGo-Software-engineering/coaching-session/blob/main/week-3/product/product_test.go)
+1. Test Double should be used to break the dependency for those test cases
+2. All test cases should pass
+```
+
 
 ### Challenge 3: API - Using Query Parameters
-Using query parameters to filter the type of wallets `?wallet_type=Saving`
+As a user, I want to filter the wallets based on the type of wallet.
 
-- **Expectation**: Filter the wallets based on the query parameters, appropriate **HTTP methods** and **HTTP status code**
+This challenge is to use query parameters to filter the type of wallets `?wallet_type=Saving`
+
+1. Jump to the `wallet/handler.go` file in the `wallet` package
+2. Add new logic for supporting query parameters
+
+#### Expectation
+```
+1. Filter the wallets based on the query parameters
+2. Using appropriate HTTP methods and HTTP status code
+3. JSON response should be returned
+
+```
 
 ### Challenge 4: API - Using Path Parameters
-Using path parameters to get wallet for specific user`users/:id/wallets`
+As a user, I want to get the wallet for a specific user.
 
-- **Expectation**: Get the wallet for the specific user, appropriate **HTTP methods** and **HTTP status code**
+This challenge is to use path parameters to get the wallet for a specific user `users/:id/wallets`
+
+#### Expectation
+```
+1. Get the wallet for the specific user
+2. Using appropriate HTTP methods and HTTP status code
+3. JSON response should be returned
+```
 
 ### Challenge 5: API - Using Request Body to Create a Wallet
-Using request body to create a wallet `/api/v1/wallets`
+As a user, I want to create a wallet.
 
-- **Expectation**: Get the wallet just created, appropriate **HTTP methods** and **HTTP status code**
+This challenge is to use the request body to create a wallet `/api/v1/wallets`
+
+#### Expectation
+```
+1. Using appropriate HTTP methods and HTTP status code
+2. JSON response should be return the wallet was just created
+```
 
 ### Challenge 6: API - Using Request Body to Update a Wallet
-Using request body to update a wallet `/api/v1/wallets`
-- **Expectation**: Get the updated wallet, appropriate **HTTP methods** and **HTTP status code**
+As a user, I want to update a wallet.
+
+This challenge is to use the request body to update a wallet `/api/v1/wallets`
+
+#### Expectation
+```
+1. Using appropriate HTTP methods and HTTP status code
+2. JSON response should be return the wallet was just updated
+```
 
 ### Challenge 7: API - Using Request Body to Delete a Wallet
-Using request body to delete a wallet `/api/v1/wallets`
-- **Expectation**: Get appropriate response **HTTP status code**
+As a user, I want to delete a wallet out of specific user.
+
+This challenge is to use the request body to delete a wallet `/api/v1/users/:id/wallets`
+
+#### Expectation
+```
+Return appropriate response **HTTP status code**
+```
 
 ### Challenge 8: DevOps - Dockerize the App - Multi-Stage Dockerfile
-Create a Dockerfile for `Go` application and build the image
+As a DevOps, we need to prepare the application for deployment and make it ready for the cloud environment.
+
+This challenge is to create a Dockerfile for the `Go` application and make sure image size is optimized.
+
+#### Expectation
+```
+1. Create a Dockerfile for the Go application
+2. Using multi-stage Dockerfile
+3. The image size should be optimized
+4. The image should be able to run the application (container)
+```
 
 ### Challenge 9: DevOps - Design a CI for running static code analysis and tests
-Design a CI for running static code analysis and tests
+As a DevOps, we need to design a CI for running static code analysis and tests.
+
+This challenge is to design a CI (Github Action) for running static code analysis and tests.
+
+#### Expectation
+```
+1. The CI should be able to run static code analysis suche go vet ./... or staticcheck or golangci-lint
+2. The CI should be able to run the tests
+3. All tasks on the CI should be passed
+```
