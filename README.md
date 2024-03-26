@@ -24,8 +24,23 @@
 5. You should see a list of wallets
 6. View Swagger documentation at [http://localhost:1323/swagger/index.html](http://localhost:1323/swagger/index.html)
 7. You should see the Swagger documentation for the API
-
 <img src="./swagger.png" alt="Swagger Documentation" />
+
+8. We've created a simple database schema for Wallet
+
+```mermaid
+erDiagram
+	user_wallet {
+		int id
+		int user_id
+		varchar user_name
+		varchar wallet_name
+		wallet_type wallet_type
+		decimal balance
+		timestamp created_at
+    }
+```
+
 
 ## Table of Contents
 - [Challenge 0: Starter Code - Display a list of wallets](#challenge-0-display-a-list-of-wallets-)
