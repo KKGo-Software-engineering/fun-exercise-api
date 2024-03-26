@@ -220,6 +220,12 @@ This challenge is to design a CI `(Github Action)` for running static code analy
 2. You can see the draft of the `Github Action` `go-ci.yml`
 3. Modify the `go-ci.yml` and implement the CI for running static code analysis and tests
 
+#### Github Action Entry Point
+<img src="./github-action-1.png" alt="Github Action">
+
+#### Github Action Workflow
+<img src="./github-action-2.png" alt="Github Action">
+
 #### Expectation
 ```
 1. The CI should be able to run static code analysis suche go vet ./... or staticcheck or golangci-lint
