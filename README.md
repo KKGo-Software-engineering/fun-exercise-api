@@ -128,10 +128,7 @@ Using request body to update a wallet `/api/v1/wallets`
 Using request body to delete a wallet `/api/v1/wallets`
 - **Expectation**: Get appropriate response **HTTP status code**
 
-### Challenge 8.0: DevOps - Dockerize the App - Single Stage Dockerfile
-Create a Dockerfile for `Go` application and build the image
-
-### Challenge 8.5: DevOps - Dockerize the App - Multi-Stage Dockerfile
+### Challenge 8: DevOps - Dockerize the App - Multi-Stage Dockerfile
 Create a Dockerfile for `Go` application and build the image
 
 ### Challenge 9: DevOps - Design a CI for running static code analysis and tests
