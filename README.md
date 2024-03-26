@@ -10,7 +10,6 @@
 - [Docker](https://docs.docker.com/get-docker/)
 - [Swag](https://github.com/swaggo/swag) - Generate Swagger Documentation
   - Install swag: `go install github.com/swaggo/swag/cmd/swag@latest`
-  - Make sure `swag` is installed
 
 # Getting Started
 1. Clone the repository
@@ -31,7 +30,7 @@
 8. You should see the Swagger documentation for the API
 <img src="./swagger.png" alt="Swagger Documentation" />
 
-9. We've created a simple database schema for Wallet `init.sql`
+9. We've created a simple database schema for Wallet `init.sql` (see detail in `docker-compose` file)
 
 ```mermaid
 erDiagram
@@ -94,6 +93,7 @@ This challenge is to replace the hardcode of the connection string in the code w
 
 1. Jump to the `postgres` package
 2. Edit `postgres/postgres.go` and replace the connection string with the environment variables instead.
+3. Feel free to refactoring the code and make it shorter for replacement
 
 #### Expectation
 ```
