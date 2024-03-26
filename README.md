@@ -137,12 +137,14 @@ This challenge is to use query parameters to filter the type of wallets `?wallet
 
 1. Jump to the `wallet/handler.go` file in the `wallet` package
 2. Add new logic for supporting query parameters
+3. Add Swagger document for that change via `swag init`
 
 #### Expectation
 ```
 1. Filter the wallets based on the query parameters
 2. Using appropriate HTTP methods and HTTP status code
 3. JSON response should be returned
+4. Swagger documentation should be implemented
 
 ```
 
@@ -156,6 +158,7 @@ This challenge is to use path parameters to get the wallet for a specific user `
 1. Get the wallet for the specific user
 2. Using appropriate HTTP methods and HTTP status code
 3. JSON response should be returned
+4. Swagger documentation should be implemented
 ```
 
 ### Challenge 5: API - Using Request Body to Create a Wallet
@@ -167,6 +170,7 @@ This challenge is to use the request body to create a wallet `/api/v1/wallets`
 ```
 1. Using appropriate HTTP methods and HTTP status code
 2. JSON response should be return the wallet was just created
+3. Swagger documentation should be implemented
 ```
 
 ### Challenge 6: API - Using Request Body to Update a Wallet
@@ -178,6 +182,7 @@ This challenge is to use the request body to update a wallet `/api/v1/wallets`
 ```
 1. Using appropriate HTTP methods and HTTP status code
 2. JSON response should be return the wallet was just updated
+3. Swagger documentation should be implemented
 ```
 
 ### Challenge 7: API - Using Request Body to Delete a Wallet
