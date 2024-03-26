@@ -127,6 +127,7 @@ This challenge is to write a unit test for the `/api/v1/wallets` endpoint and pr
 ```
 1. Test Double should be used to break the dependency for those test cases
 2. All test cases should pass
+3. Feel free to add more test cases
 ```
 
 
@@ -138,6 +139,7 @@ This challenge is to use query parameters to filter the type of wallets `?wallet
 1. Jump to the `wallet/handler.go` file in the `wallet` package
 2. Add new logic for supporting query parameters
 3. Add Swagger document for that change via `swag init`
+4. Learn more about [Query Parameters](https://echo.labstack.com/guide/request#query-parameters)
 
 #### Expectation
 ```
@@ -153,6 +155,7 @@ As a user, I want to get the wallet for a specific user.
 
 This challenge is to use path parameters to get the wallet for a specific user `users/:id/wallets`
 
+Learn more about [Path Parameters](https://echo.labstack.com/guide/request#path-parameters)
 #### Expectation
 ```
 1. Get the wallet for the specific user
