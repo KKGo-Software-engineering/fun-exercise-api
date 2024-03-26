@@ -214,7 +214,11 @@ This challenge is to create a Dockerfile for the `Go` application and make sure 
 ### Challenge 9: DevOps - Design a CI for running static code analysis and tests
 As a DevOps, we need to design a CI for running static code analysis and tests.
 
-This challenge is to design a CI (Github Action) for running static code analysis and tests.
+This challenge is to design a CI `(Github Action)` for running static code analysis and tests.
+
+1. Look at the `.github/workflows` folder
+2. You can see the draft of the `Github Action` `go-ci.yml`
+3. Modify the `go-ci.yml` and implement the CI for running static code analysis and tests
 
 #### Expectation
 ```
