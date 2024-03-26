@@ -86,7 +86,6 @@ func (h *Handler) WalletHandler(c echo.Context) error {
 
 ### Challenge 1: API - Using environment variables
 As a developer, we need to deploy the application on the cloud, we need to prepare the application and make it ready for the cloud environment.
-One of the best practices is to store the configuration in the environment variables.
 In 12 Factors App, it's recommended to store the configuration in the environment variables.
 
 This challenge is to replace the hardcode of the connection string in the code with the environment variables.
