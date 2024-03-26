@@ -174,6 +174,7 @@ This challenge is to use the request body to create a wallet `/api/v1/wallets`
 1. Using appropriate HTTP methods and HTTP status code
 2. JSON response should be return the wallet was just created
 3. Swagger documentation should be implemented
+4. Wallet should be created in the database
 ```
 
 ### Challenge 6: API - Using Request Body to Update a Wallet
@@ -186,16 +187,18 @@ This challenge is to use the request body to update a wallet `/api/v1/wallets`
 1. Using appropriate HTTP methods and HTTP status code
 2. JSON response should be return the wallet was just updated
 3. Swagger documentation should be implemented
+4. Wallet should be updated in the database
 ```
 
-### Challenge 7: API - Using Request Body to Delete a Wallet
+### Challenge 7: API - Delete a Wallet
 As a user, I want to delete a wallet out of specific user.
 
 This challenge is to use the request body to delete a wallet `/api/v1/users/:id/wallets`
 
 #### Expectation
 ```
-Return appropriate response **HTTP status code**
+1. Return appropriate response **HTTP status code**
+2. Wallet should be deleted in the database
 ```
 
 ### Challenge 8: DevOps - Dockerize the App - Multi-Stage Dockerfile
