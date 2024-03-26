@@ -206,12 +206,15 @@ As a DevOps, we need to prepare the application for deployment and make it ready
 
 This challenge is to create a Dockerfile for the `Go` application and make sure image size is optimized.
 
+1. Jump to `Dockerfile`
+2. Feel free to change base image, add more layers, and optimize the image size
+
 #### Expectation
 ```
 1. Create a Dockerfile for the Go application
 2. Using multi-stage Dockerfile
 3. The image size should be optimized
-4. The image should be able to run the application (container)
+4. The image should be able to run the application (docker run)
 ```
 
 ### Challenge 9: DevOps - Design a CI for running static code analysis and tests
