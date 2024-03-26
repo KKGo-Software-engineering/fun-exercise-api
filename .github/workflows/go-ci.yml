@@ -1,0 +1,18 @@
+name: Go CI
+
+on: [push]
+
+jobs:
+    build:
+        runs-on: ubuntu-latest
+        strategy:
+            matrix:
+                go-version: ['1.21.8', '1.22.1']
+        steps:
+            - uses: actions/checkout@v4
+            - name: Setup Go ${{ matrix.go-version }}
+              uses: actions/setup-go@v4
+              with:
+                  go-version: ${{ matrix.go-version }}
+            - name: Display Go version
+              run: go version

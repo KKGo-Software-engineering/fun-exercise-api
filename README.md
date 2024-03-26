@@ -221,4 +221,5 @@ This challenge is to design a CI (Github Action) for running static code analysi
 1. The CI should be able to run static code analysis suche go vet ./... or staticcheck or golangci-lint
 2. The CI should be able to run the tests
 3. All tasks on the CI should be passed
+4. Feel free to add more tasks - e.g. build the Docker image
 ```
