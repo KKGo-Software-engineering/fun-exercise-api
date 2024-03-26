@@ -26,12 +26,12 @@
 7. You should see the Swagger documentation for the API
 <img src="./swagger.png" alt="Swagger Documentation" />
 
-8. We've created a simple database schema for Wallet
+8. We've created a simple database schema for Wallet `init.sql`
 
 ```mermaid
 erDiagram
 	user_wallet {
-		int id
+		int id PK
 		int user_id
 		varchar user_name
 		varchar wallet_name
