@@ -9,7 +9,8 @@
     - Verify installation: `go version`
 - [Docker](https://docs.docker.com/get-docker/)
 - [Swag](https://github.com/swaggo/swag) - Generate Swagger Documentation
-  - Install swag: `https://github.com/swaggo/swag`
+  - Install swag: `go install github.com/swaggo/swag/cmd/swag@latest`
+  - Make sure `swag` is installed
 
 # Getting Started
 1. Clone the repository
@@ -104,6 +105,7 @@ func TestWallet(t *testing.T) {
 ```
 - Run the test cases `go test -v ./...`
 - **Expectation**: **Test Double** should be used to break the dependency for those test cases
+- You can see an example [coaching-week-3](https://github.com/KKGo-Software-engineering/coaching-session/blob/main/week-3/product/product_test.go)
 
 ### Challenge 3: API - Using Query Parameters
 Using query parameters to filter the type of wallets `?wallet_type=Saving`
