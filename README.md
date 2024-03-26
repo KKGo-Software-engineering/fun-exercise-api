@@ -118,11 +118,15 @@ Using path parameters to get wallet for specific user`users/:id/wallets`
 ### Challenge 5: API - Using Request Body to Create a Wallet
 Using request body to create a wallet `/api/v1/wallets`
 
+- **Expectation**: Get the wallet just created, appropriate **HTTP methods** and **HTTP status code**
+
 ### Challenge 6: API - Using Request Body to Update a Wallet
 Using request body to update a wallet `/api/v1/wallets`
+- **Expectation**: Get the updated wallet, appropriate **HTTP methods** and **HTTP status code**
 
 ### Challenge 7: API - Using Request Body to Delete a Wallet
 Using request body to delete a wallet `/api/v1/wallets`
+- **Expectation**: Get appropriate response **HTTP status code**
 
 ### Challenge 8.0: DevOps - Dockerize the App - Single Stage Dockerfile
 Create a Dockerfile for `Go` application and build the image
