@@ -83,16 +83,37 @@ func (h *Handler) WalletHandler(c echo.Context) error {
 12 Factors App - [Config](https://12factor.net/config) - Store config in the environment
 
 - Jump to the `postgres` package
-- Edit `postgres/postgres.go` and replace the connection string with the following code
+- Edit `postgres/postgres.go` and replace the connection string
+- **Expectation**: No hardcode of the connection string in the code
+
 
 ### Challenge 2: API - Write Unit Test for /ap/v1/wallets
 - Jump to the `wallet_test.go` file in the `wallet` package
+- We've created draft of the test cases
+- We need to implement the test cases and learn how to break dependency by **Test Double**
+```go
+func TestWallet(t *testing.T) {
+	t.Run("given unable to get wallets should return 500 and error message", func(t *testing.T) {
+
+	})
+
+	t.Run("given user able to getting wallet should return list of wallets", func(t *testing.T) {
+
+	})
+}
+```
+- Run the test cases `go test -v ./...`
+- **Expectation**: **Test Double** should be used to break the dependency for those test cases
 
 ### Challenge 3: API - Using Query Parameters
 Using query parameters to filter the type of wallets `?wallet_type=Saving`
 
+- **Expectation**: Filter the wallets based on the query parameters, appropriate **HTTP methods** and **HTTP status code**
+
 ### Challenge 4: API - Using Path Parameters
 Using path parameters to get wallet for specific user`users/:id/wallets`
+
+- **Expectation**: Get the wallet for the specific user, appropriate **HTTP methods** and **HTTP status code**
 
 ### Challenge 5: API - Using Request Body to Create a Wallet
 Using request body to create a wallet `/api/v1/wallets`
