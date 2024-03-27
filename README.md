@@ -93,6 +93,7 @@ This challenge is to replace the hardcode of the connection string in the code w
 1. Jump to the `postgres` package
 2. Edit `postgres/postgres.go` and replace the connection string with the environment variables instead.
 3. Feel free to refactoring the code and make it shorter for replacement
+4. Hint `os.Getenv("XXX")` - Get the environment variable
 
 #### Expectation
 ```
