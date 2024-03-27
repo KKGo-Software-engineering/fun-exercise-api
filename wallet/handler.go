@@ -1,8 +1,9 @@
 package wallet
 
 import (
-	"github.com/labstack/echo/v4"
 	"net/http"
+
+	"github.com/labstack/echo/v4"
 )
 
 type Handler struct {
@@ -11,6 +12,7 @@ type Handler struct {
 
 type Storer interface {
 	Wallets() ([]Wallet, error)
+	WalletsByUserId(id string) ([]Wallet, error)
 }
 
 func New(db Storer) *Handler {
@@ -22,6 +24,7 @@ type Err struct {
 }
 
 // WalletHandler
+//
 //	@Summary		Get all wallets
 //	@Description	Get all wallets
 //	@Tags			wallet
@@ -35,5 +38,15 @@ func (h *Handler) WalletHandler(c echo.Context) error {
 	if err != nil {
 		return c.JSON(http.StatusInternalServerError, Err{Message: err.Error()})
 	}
+	return c.JSON(http.StatusOK, wallets)
+}
+
+func (h *Handler) WalletHandlerByUserId(c echo.Context) error {
+	id := c.Param("id")
+	wallets, err := h.store.WalletsByUserId(id)
+	if err != nil {
+		return c.JSON(http.StatusInternalServerError, Err{Message: err.Error()})
+	}
+
 	return c.JSON(http.StatusOK, wallets)
 }
