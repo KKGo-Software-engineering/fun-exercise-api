@@ -54,7 +54,7 @@ erDiagram
 - [Challenge 4: API - Using Path Parameters](#challenge-4-api---using-path-parameters)
 - [Challenge 5: API - Using Request Body to Create a Wallet](#challenge-5-api---using-request-body-to-create-a-wallet)
 - [Challenge 6: API - Using Request Body to Update a Wallet](#challenge-6-api---using-request-body-to-update-a-wallet)
-- [Challenge 7: API - Using Request Body to Delete a Wallet](#challenge-7-api---using-request-body-to-delete-a-wallet)
+- [Challenge 7: API - Delete a Wallet](#challenge-7-api---delete-a-wallet)
 - [Challenge 8: DevOps - Dockerize the App - Multi-Stage Dockerfile](#challenge-8-devops---dockerize-the-app---multi-stage-dockerfile)
 - [Challenge 9: DevOps - Design a CI for running static code analysis and tests](#challenge-9-devops---design-a-ci-for-running-static-code-analysis-and-tests)
 
