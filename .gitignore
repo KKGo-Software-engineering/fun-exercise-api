@@ -1,1 +1,10 @@
+# Editor directories and files
 .idea
+.vscode
+.DS_Store
+
+# Environment Configuration
+.env
+*.env
+.env.*
+!.env.example
