@@ -7,14 +7,29 @@ import (
 
 	_ "github.com/KKGo-Software-engineering/fun-exercise-api/docs"
 	echoSwagger "github.com/swaggo/echo-swagger"
+
+	"os"
+
+	"github.com/joho/godotenv"
 )
 
-//	@title			Wallet API
-//	@version		1.0
-//	@description	Sophisticated Wallet API
-//	@host			localhost:1323
+// @title			Wallet API
+// @version		1.0
+// @description	Sophisticated Wallet API
+// @host			localhost:1323
 func main() {
-	p, err := postgres.New()
+	err := godotenv.Load(".env")
+
+	if err != nil {
+		panic("please create .env file with the following file .env.example")
+	}
+
+	dbConfig := postgres.Config{
+		DatabaseURL: os.Getenv("DATABASE_URL"),
+	}
+
+	p, err := postgres.New(dbConfig)
+
 	if err != nil {
 		panic(err)
 	}
