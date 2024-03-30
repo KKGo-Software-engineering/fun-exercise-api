@@ -13,7 +13,7 @@ import (
 
 type mockStorerSuccess struct{}
 
-func (m *mockStorerSuccess) Wallets() ([]Wallet, error) {
+func (m *mockStorerSuccess) Wallets(walletType string) ([]Wallet, error) {
 	mockDateString := "2024-02-03T00:00:00Z"
 	layout := "2006-01-02T15:04:05Z"
 	createdAt, err := time.Parse(layout, mockDateString) 
@@ -34,7 +34,7 @@ func (m *mockStorerSuccess) Wallets() ([]Wallet, error) {
 
 type mockStorerFailure struct{}
 
-func (m *mockStorerFailure) Wallets() ([]Wallet, error) {
+func (m *mockStorerFailure) Wallets(walletType string) ([]Wallet, error) {
 	return nil, errors.New("error fetching wallets")
 }
 
