@@ -67,4 +67,37 @@ paths:
       summary: Get all wallets and filter by wallet type
       tags:
       - wallet
+  /api/v1/wallets/{id}:
+    get:
+      consumes:
+      - application/json
+      description: Get wallet by id
+      parameters:
+      - description: Wallet Id
+        format: uint64
+        in: path
+        name: id
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/wallet.Wallet'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/wallet.Err'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/wallet.Err'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/wallet.Err'
+      summary: Get wallet by id
+      tags:
+      - wallet
 swagger: "2.0"
