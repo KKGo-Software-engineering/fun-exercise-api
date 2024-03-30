@@ -39,7 +39,16 @@ paths:
     get:
       consumes:
       - application/json
-      description: Get all wallets
+      description: Get all wallets and filter by wallet type
+      parameters:
+      - description: Filter by wallet type
+        enum:
+        - Savings
+        - Credit Card
+        - Crypto Wallet
+        in: query
+        name: wallet_type
+        type: string
       produces:
       - application/json
       responses:
@@ -47,11 +56,15 @@ paths:
           description: OK
           schema:
             $ref: '#/definitions/wallet.Wallet'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/wallet.Err'
         "500":
           description: Internal Server Error
           schema:
             $ref: '#/definitions/wallet.Err'
-      summary: Get all wallets
+      summary: Get all wallets and filter by wallet type
       tags:
       - wallet
 swagger: "2.0"

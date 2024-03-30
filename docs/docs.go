@@ -17,7 +17,7 @@ const docTemplate = `{
     "paths": {
         "/api/v1/wallets": {
             "get": {
-                "description": "Get all wallets",
+                "description": "Get all wallets and filter by wallet type",
                 "consumes": [
                     "application/json"
                 ],
@@ -27,12 +27,31 @@ const docTemplate = `{
                 "tags": [
                     "wallet"
                 ],
-                "summary": "Get all wallets",
+                "summary": "Get all wallets and filter by wallet type",
+                "parameters": [
+                    {
+                        "enum": [
+                            "Savings",
+                            "Credit Card",
+                            "Crypto Wallet"
+                        ],
+                        "type": "string",
+                        "description": "Filter by wallet type",
+                        "name": "wallet_type",
+                        "in": "query"
+                    }
+                ],
                 "responses": {
                     "200": {
                         "description": "OK",
                         "schema": {
                             "$ref": "#/definitions/wallet.Wallet"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/wallet.Err"
                         }
                     },
                     "500": {

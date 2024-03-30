@@ -1,1 +1,2 @@
 GET localhost:1323/api/v1/wallets
+GET localhost:1323/api/v1/wallets?wallet_type=Savings

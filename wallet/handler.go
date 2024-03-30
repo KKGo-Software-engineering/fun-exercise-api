@@ -1,8 +1,9 @@
 package wallet
 
 import (
-	"github.com/labstack/echo/v4"
 	"net/http"
+
+	"github.com/labstack/echo/v4"
 )
 
 type Handler struct {
@@ -23,24 +24,26 @@ type Err struct {
 
 func (h *Handler) isValidWalletType(walletType string) bool {
 	validWalletTypes := map[string]bool{
-			"Savings":     true,
-			"Credit Card": true,
-			"Crypto Wallet": true,
+		"Savings":       true,
+		"Credit Card":   true,
+		"Crypto Wallet": true,
 	}
 
 	_, ok := validWalletTypes[walletType]
 	return ok
 }
 
-// WalletHandler
-//	@Summary		Get all wallets
-//	@Description	Get all wallets
-//	@Tags			wallet
-//	@Accept			json
-//	@Produce		json
-//	@Success		200	{object}	Wallet
-//	@Router			/api/v1/wallets [get]
-//	@Failure		500	{object}	Err
+//	 WalletHandler
+//		@Summary		Get all wallets and filter by wallet type
+//		@Description	Get all wallets and filter by wallet type
+//		@Tags			wallet
+//		@Accept			json
+//		@Produce		json
+//		@Success		200	{object}	Wallet
+//		@Router			/api/v1/wallets [get]
+//		@Param			wallet_type query string false "Filter by wallet type" Enums(Savings, Credit Card, Crypto Wallet)
+//		@Failure		400	{object}	Err
+//		@Failure		500	{object}	Err
 func (h *Handler) WalletHandler(c echo.Context) error {
 	walletType := c.QueryParam("wallet_type")
 
