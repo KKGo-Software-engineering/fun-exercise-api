@@ -15,8 +15,16 @@ type Wallet struct {
 	CreatedAt  time.Time `postgres:"created_at"`
 }
 
-func (p *Postgres) Wallets() ([]wallet.Wallet, error) {
-	rows, err := p.Db.Query("SELECT * FROM user_wallet")
+func (p *Postgres) Wallets(walletType string) ([]wallet.Wallet, error) {
+	queryString := "SELECT * FROM user_wallet"
+	var args []interface{}
+	if walletType != "" {
+		queryString += " WHERE wallet_type = $1"
+		args = append(args, walletType)
+	}
+	
+	rows, err := p.Db.Query(queryString, args...)
+
 	if err != nil {
 		return nil, err
 	}
