@@ -2,10 +2,10 @@ package wallet
 
 import (
 	"errors"
-	"time"
 	"net/http"
 	"net/http/httptest"
 	"testing"
+	"time"
 
 	"github.com/labstack/echo/v4"
 	"github.com/stretchr/testify/assert"
@@ -16,26 +16,34 @@ type mockStorerSuccess struct{}
 func (m *mockStorerSuccess) Wallets(walletType string) ([]Wallet, error) {
 	mockDateString := "2024-02-03T00:00:00Z"
 	layout := "2006-01-02T15:04:05Z"
-	createdAt, err := time.Parse(layout, mockDateString) 
-	if err != nil { 
-			panic(err) 
+	createdAt, err := time.Parse(layout, mockDateString)
+	if err != nil {
+		panic(err)
 	}
 
 	return []Wallet{{
-			ID: 1,
-			UserID: 1,
-			UserName: "John Doe",
-			WalletName: "John's Wallet",
-			WalletType: "Create Card",
-			CreatedAt: createdAt,
-			Balance: 100,	
-	}},nil
+		ID:         1,
+		UserID:     1,
+		UserName:   "John Doe",
+		WalletName: "John's Wallet",
+		WalletType: "Create Card",
+		CreatedAt:  createdAt,
+		Balance:    100,
+	}}, nil
+}
+
+func (m *mockStorerSuccess) Wallet(id uint64) (Wallet, error) {
+	return Wallet{}, nil
 }
 
 type mockStorerFailure struct{}
 
 func (m *mockStorerFailure) Wallets(walletType string) ([]Wallet, error) {
 	return nil, errors.New("error fetching wallets")
+}
+
+func (m *mockStorerFailure) Wallet(id uint64) (Wallet, error) {
+	return Wallet{}, nil
 }
 
 func TestWallet(t *testing.T) {
