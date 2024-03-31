@@ -15,6 +15,7 @@ type Storer interface {
 	Wallets(walletType string) ([]Wallet, error)
 	Wallet(id uint64) (Wallet, error)
 	CreateWallet(wallet WalletPayload) (int, error)
+	UpdateWallet(id uint64, wallet WalletPayload) (int, error)
 }
 
 func New(db Storer) *Handler {
@@ -40,7 +41,7 @@ type WalletPayload struct {
 	UserID     int     `json:"user_id" example:"1" validate:"required"`
 	UserName   string  `json:"user_name" example:"John Doe" validate:"required"`
 	WalletName string  `json:"wallet_name" example:"John's Wallet" validate:"required"`
-	WalletType string  `json:"wallet_type" example:"Create Card" validate:"required"`
+	WalletType string  `json:"wallet_type" example:"Credit Card" validate:"required"`
 	Balance    float64 `json:"balance" example:"100.00" validate:"required"`
 }
 
@@ -80,8 +81,8 @@ func (h *Handler) WalletHandler(c echo.Context) error {
 //		@Accept			json
 //		@Produce		json
 //		@Success		200	{object}	Wallet
-//		@Router			/api/v1/wallets/{id} [get]
-//		@Param			id path string false "Wallet Id" Format(uint64)
+//		@Router			/api/v1/wallets/{walletId} [get]
+//		@Param			walletId path string false "Wallet Id" Format(uint64)
 //		@Failure		400	{object}	Err
 //		@Failure		404	{object}	Err
 //		@Failure		500	{object}	Err
@@ -128,8 +129,54 @@ func (h *Handler) CreateWalletHandler(c echo.Context) error {
 	return c.JSON(http.StatusCreated, createdResponse)
 }
 
+//		 UpdateWalletHandler
+//			@Summary		Update wallet
+//			@Description	Update wallet
+//			@Tags			wallet
+//			@Accept			json
+//			@Produce		json
+//			@Success		200	{object}	string
+//			@Router			/api/v1/wallets/{walletId} [put]
+//	    @Param			walletId path string false "Wallet Id" Format(uint64)
+//			@Param			wallet body WalletPayload true "Wallet Payload" Format(WalletPayload)
+//			@Failure		400	{object}	Err
+//			@Failure		404	{object}	Err
+//			@Failure		500	{object}	Err
+func (h *Handler) UpdateWalletHandler(c echo.Context) error {
+	id, _ := strconv.ParseUint(c.Param("walletId"), 0, 64)
+	if id == 0 {
+		return c.JSON(http.StatusBadRequest, Err{Message: "Invalid wallet id"})
+	}
+
+	var wallet WalletPayload
+	var err error
+
+	if err = c.Bind(&wallet); err != nil {
+		return echo.NewHTTPError(http.StatusBadRequest, err.Error())
+	}
+
+	if err = c.Validate(&wallet); err != nil {
+		return err
+	}
+
+	// Find wallet by id before updating
+	_, err = h.store.Wallet(id)
+
+	if err != nil {
+		return c.JSON(http.StatusNotFound, Err{Message: "Wallet not found"})
+	}
+
+	if _, err := h.store.UpdateWallet(id, wallet); err != nil {
+		return c.JSON(http.StatusInternalServerError, Err{Message: err.Error()})
+	}
+
+	updatedResponse := "the wallet was just updated"
+	return c.JSON(http.StatusOK, updatedResponse)
+}
+
 func (h *Handler) RegisterRoutes(e *echo.Echo) {
 	e.GET("/api/v1/wallets", h.WalletHandler)
 	e.GET("/api/v1/wallets/:walletId", h.WalletHandlerByID)
 	e.POST("/api/v1/wallets", h.CreateWalletHandler)
+	e.PUT("/api/v1/wallets/:walletId", h.UpdateWalletHandler)
 }
