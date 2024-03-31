@@ -91,3 +91,13 @@ func (p *Postgres) CreateWallet(w wallet.WalletPayload) (int, error) {
 
 	return id, nil
 }
+
+func (p *Postgres) UpdateWallet(id uint64, w wallet.WalletPayload) (int, error) {
+	queryString := "UPDATE user_wallet SET user_id = $1, user_name = $2, wallet_name = $3, wallet_type = $4, balance = $5 WHERE id = $6"
+	_, err := p.Db.Exec(queryString, w.UserID, w.UserName, w.WalletName, w.WalletType, w.Balance, id)
+	if err != nil {
+		return 0, err
+	}
+
+	return w.UserID, nil
+}

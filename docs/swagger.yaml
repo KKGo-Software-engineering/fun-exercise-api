@@ -25,7 +25,7 @@ definitions:
         example: John's Wallet
         type: string
       wallet_type:
-        example: Create Card
+        example: Credit Card
         type: string
     type: object
   wallet.WalletPayload:
@@ -43,8 +43,14 @@ definitions:
         example: John's Wallet
         type: string
       wallet_type:
-        example: Create Card
+        example: Credit Card
         type: string
+    required:
+    - balance
+    - user_id
+    - user_name
+    - wallet_name
+    - wallet_type
     type: object
 host: localhost:1323
 info:
@@ -115,7 +121,7 @@ paths:
       summary: Create wallet
       tags:
       - wallet
-  /api/v1/wallets/{id}:
+  /api/v1/wallets/{walletId}:
     get:
       consumes:
       - application/json
@@ -124,7 +130,7 @@ paths:
       - description: Wallet Id
         format: uint64
         in: path
-        name: id
+        name: walletId
         type: string
       produces:
       - application/json
@@ -146,6 +152,45 @@ paths:
           schema:
             $ref: '#/definitions/wallet.Err'
       summary: Get wallet by id
+      tags:
+      - wallet
+    put:
+      consumes:
+      - application/json
+      description: Update wallet
+      parameters:
+      - description: Wallet Id
+        format: uint64
+        in: path
+        name: walletId
+        type: string
+      - description: Wallet Payload
+        format: WalletPayload
+        in: body
+        name: wallet
+        required: true
+        schema:
+          $ref: '#/definitions/wallet.WalletPayload'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: string
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/wallet.Err'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/wallet.Err'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/wallet.Err'
+      summary: Update wallet
       tags:
       - wallet
 swagger: "2.0"
