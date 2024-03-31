@@ -1,6 +1,8 @@
 package main
 
 import (
+	"log"
+
 	"github.com/KKGo-Software-engineering/fun-exercise-api/helper"
 	"github.com/KKGo-Software-engineering/fun-exercise-api/postgres"
 	"github.com/KKGo-Software-engineering/fun-exercise-api/wallet"
@@ -19,10 +21,10 @@ import (
 // @description	Sophisticated Wallet API
 // @host			localhost:1323
 func main() {
-	err := godotenv.Load(".env")
+	err := godotenv.Load()
 
 	if err != nil {
-		panic("please create .env file with the following file .env.example")
+		log.Fatal("please create .env file with the following file .env.example")
 	}
 
 	dbConfig := postgres.Config{
@@ -40,5 +42,5 @@ func main() {
 	e.GET("/swagger/*", echoSwagger.WrapHandler)
 	handler := wallet.New(p)
 	handler.RegisterRoutes(e)
-	e.Logger.Fatal(e.Start(":1323"))
+	e.Logger.Fatal(e.Start(os.Getenv("PORT")))
 }
