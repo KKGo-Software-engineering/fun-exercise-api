@@ -103,7 +103,7 @@
         },
         "/api/v1/wallets/{walletId}": {
             "get": {
-                "description": "Get wallet by id",
+                "description": "Get wallet by walletId",
                 "consumes": [
                     "application/json"
                 ],
@@ -113,7 +113,7 @@
                 "tags": [
                     "wallet"
                 ],
-                "summary": "Get wallet by id",
+                "summary": "Get wallet",
                 "parameters": [
                     {
                         "type": "string",
@@ -151,7 +151,7 @@
                 }
             },
             "put": {
-                "description": "Update wallet",
+                "description": "Update wallet by walletId",
                 "consumes": [
                     "application/json"
                 ],
@@ -179,6 +179,54 @@
                         "schema": {
                             "$ref": "#/definitions/wallet.WalletPayload"
                         }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/wallet.Err"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/wallet.Err"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/wallet.Err"
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "description": "Delete wallet by walletId",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "wallet"
+                ],
+                "summary": "Delete wallet",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "format": "uint64",
+                        "description": "Wallet Id",
+                        "name": "walletId",
+                        "in": "path"
                     }
                 ],
                 "responses": {
