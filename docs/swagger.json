@@ -54,6 +54,51 @@
                         }
                     }
                 }
+            },
+            "post": {
+                "description": "Create wallet",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "wallet"
+                ],
+                "summary": "Create wallet",
+                "parameters": [
+                    {
+                        "format": "WalletPayload",
+                        "description": "Wallet Payload",
+                        "name": "wallet",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/wallet.WalletPayload"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Created",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/wallet.Err"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/wallet.Err"
+                        }
+                    }
+                }
             }
         },
         "/api/v1/wallets/{id}": {
@@ -130,6 +175,31 @@
                 "id": {
                     "type": "integer",
                     "example": 1
+                },
+                "user_id": {
+                    "type": "integer",
+                    "example": 1
+                },
+                "user_name": {
+                    "type": "string",
+                    "example": "John Doe"
+                },
+                "wallet_name": {
+                    "type": "string",
+                    "example": "John's Wallet"
+                },
+                "wallet_type": {
+                    "type": "string",
+                    "example": "Create Card"
+                }
+            }
+        },
+        "wallet.WalletPayload": {
+            "type": "object",
+            "properties": {
+                "balance": {
+                    "type": "number",
+                    "example": 100
                 },
                 "user_id": {
                     "type": "integer",
