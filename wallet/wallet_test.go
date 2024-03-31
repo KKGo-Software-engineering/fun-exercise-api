@@ -61,6 +61,10 @@ func (m *mockStorerSuccess) UpdateWallet(id uint64, wallet WalletPayload) (int, 
 	return 1, nil
 }
 
+func (m *mockStorerSuccess) DeleteWallet(id uint64) (int, error) {
+	return 1, nil
+}
+
 type mockStorerFailure struct{}
 
 func (m *mockStorerFailure) Wallets(walletType string) ([]Wallet, error) {
@@ -77,6 +81,10 @@ func (m *mockStorerFailure) CreateWallet(wallet WalletPayload) (int, error) {
 
 func (m *mockStorerFailure) UpdateWallet(id uint64, wallet WalletPayload) (int, error) {
 	return 0, errors.New("error updating wallet")
+}
+
+func (m *mockStorerFailure) DeleteWallet(id uint64) (int, error) {
+	return 0, errors.New("error deleting wallet")
 }
 
 func TestWallet(t *testing.T) {
@@ -116,7 +124,7 @@ func TestWallet(t *testing.T) {
 		}
 	})
 
-	t.Run("Get wallet by walletId: not found", func(t *testing.T) {
+	t.Run("Get wallet by walletId: Wallet id is required", func(t *testing.T) {
 		// Setup
 		e := echo.New()
 		req := httptest.NewRequest(http.MethodGet, "/api/v1/wallets/122", nil)
@@ -129,7 +137,7 @@ func TestWallet(t *testing.T) {
 		if assert.NoError(t, h.WalletHandlerByID(c)) {
 			assert.Equal(t, http.StatusBadRequest, rec.Code)
 
-			expectedResponse := `{"message":"Invalid wallet id"}`
+			expectedResponse := `{"message":"Wallet id is required"}`
 			assert.JSONEq(t, expectedResponse, rec.Body.String())
 		}
 	})
@@ -272,6 +280,64 @@ func TestWallet(t *testing.T) {
 			assert.Equal(t, http.StatusNotFound, rec.Code)
 
 			expectedResponse := `{"message":"Wallet not found"}`
+			assert.JSONEq(t, expectedResponse, rec.Body.String())
+		}
+	})
+
+	t.Run("Delete wallet: wallet not found", func(t *testing.T) {
+		// Setup
+		e := echo.New()
+		req := httptest.NewRequest(http.MethodDelete, "/api/v1/wallets/122", nil)
+		rec := httptest.NewRecorder()
+		c := e.NewContext(req, rec)
+		c.SetParamNames("walletId")
+		c.SetParamValues("122")
+
+		h := New(&mockStorerFailure{})
+
+		// Assertions
+		if assert.NoError(t, h.DeleteWalletHandler(c)) {
+			assert.Equal(t, http.StatusNotFound, rec.Code)
+
+			expectedResponse := `{"message":"Wallet not found"}`
+			assert.JSONEq(t, expectedResponse, rec.Body.String())
+		}
+	})
+
+	t.Run("Delete wallet: success", func(t *testing.T) {
+		// Setup
+		e := echo.New()
+		req := httptest.NewRequest(http.MethodDelete, "/api/v1/wallets/1", nil)
+		rec := httptest.NewRecorder()
+		c := e.NewContext(req, rec)
+		c.SetParamNames("walletId")
+		c.SetParamValues("1")
+
+		h := New(&mockStorerSuccess{})
+
+		// Assertions
+		if assert.NoError(t, h.DeleteWalletHandler(c)) {
+			assert.Equal(t, http.StatusOK, rec.Code)
+
+			expectedResponse := `"the wallet was just deleted"`
+			assert.Equal(t, expectedResponse, strings.TrimSpace(rec.Body.String()))
+		}
+	})
+
+	t.Run("Delete wallet: walletId is required", func(t *testing.T) {
+		// Setup
+		e := echo.New()
+		req := httptest.NewRequest(http.MethodDelete, "/api/v1/wallets", nil)
+		rec := httptest.NewRecorder()
+		c := e.NewContext(req, rec)
+
+		h := New(&mockStorerFailure{})
+
+		// Assertions
+		if assert.NoError(t, h.DeleteWalletHandler(c)) {
+			assert.Equal(t, http.StatusBadRequest, rec.Code)
+
+			expectedResponse := `{"message":"Wallet id is required"}`
 			assert.JSONEq(t, expectedResponse, rec.Body.String())
 		}
 	})

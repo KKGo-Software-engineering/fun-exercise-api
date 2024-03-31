@@ -122,10 +122,42 @@ paths:
       tags:
       - wallet
   /api/v1/wallets/{walletId}:
+    delete:
+      consumes:
+      - application/json
+      description: Delete wallet by walletId
+      parameters:
+      - description: Wallet Id
+        format: uint64
+        in: path
+        name: walletId
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: string
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/wallet.Err'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/wallet.Err'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/wallet.Err'
+      summary: Delete wallet
+      tags:
+      - wallet
     get:
       consumes:
       - application/json
-      description: Get wallet by id
+      description: Get wallet by walletId
       parameters:
       - description: Wallet Id
         format: uint64
@@ -151,13 +183,13 @@ paths:
           description: Internal Server Error
           schema:
             $ref: '#/definitions/wallet.Err'
-      summary: Get wallet by id
+      summary: Get wallet
       tags:
       - wallet
     put:
       consumes:
       - application/json
-      description: Update wallet
+      description: Update wallet by walletId
       parameters:
       - description: Wallet Id
         format: uint64
