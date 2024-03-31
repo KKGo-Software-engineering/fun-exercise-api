@@ -108,7 +108,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/api/v1/wallets/{id}": {
+        "/api/v1/wallets/{walletId}": {
             "get": {
                 "description": "Get wallet by id",
                 "consumes": [
@@ -126,7 +126,7 @@ const docTemplate = `{
                         "type": "string",
                         "format": "uint64",
                         "description": "Wallet Id",
-                        "name": "id",
+                        "name": "walletId",
                         "in": "path"
                     }
                 ],
@@ -135,6 +135,64 @@ const docTemplate = `{
                         "description": "OK",
                         "schema": {
                             "$ref": "#/definitions/wallet.Wallet"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/wallet.Err"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/wallet.Err"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/wallet.Err"
+                        }
+                    }
+                }
+            },
+            "put": {
+                "description": "Update wallet",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "wallet"
+                ],
+                "summary": "Update wallet",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "format": "uint64",
+                        "description": "Wallet Id",
+                        "name": "walletId",
+                        "in": "path"
+                    },
+                    {
+                        "format": "WalletPayload",
+                        "description": "Wallet Payload",
+                        "name": "wallet",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/wallet.WalletPayload"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "string"
                         }
                     },
                     "400": {
@@ -197,12 +255,19 @@ const docTemplate = `{
                 },
                 "wallet_type": {
                     "type": "string",
-                    "example": "Create Card"
+                    "example": "Credit Card"
                 }
             }
         },
         "wallet.WalletPayload": {
             "type": "object",
+            "required": [
+                "balance",
+                "user_id",
+                "user_name",
+                "wallet_name",
+                "wallet_type"
+            ],
             "properties": {
                 "balance": {
                     "type": "number",
@@ -222,7 +287,7 @@ const docTemplate = `{
                 },
                 "wallet_type": {
                     "type": "string",
-                    "example": "Create Card"
+                    "example": "Credit Card"
                 }
             }
         }
