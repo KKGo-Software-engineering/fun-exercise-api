@@ -99,5 +99,15 @@ func (p *Postgres) UpdateWallet(id uint64, w wallet.WalletPayload) (int, error) 
 		return 0, err
 	}
 
-	return w.UserID, nil
+	return int(id), nil
+}
+
+func (p *Postgres) DeleteWallet(id uint64) (int, error) {
+	queryString := "DELETE FROM user_wallet WHERE id = $1"
+	_, err := p.Db.Exec(queryString, id)
+	if err != nil {
+		return 0, err
+	}
+
+	return int(id), nil
 }
