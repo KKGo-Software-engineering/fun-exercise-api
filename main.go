@@ -1,6 +1,7 @@
 package main
 
 import (
+	"github.com/KKGo-Software-engineering/fun-exercise-api/helper"
 	"github.com/KKGo-Software-engineering/fun-exercise-api/postgres"
 	"github.com/KKGo-Software-engineering/fun-exercise-api/wallet"
 	"github.com/labstack/echo/v4"
@@ -35,9 +36,9 @@ func main() {
 	}
 
 	e := echo.New()
+	e.Validator = helper.NewValidator()
 	e.GET("/swagger/*", echoSwagger.WrapHandler)
 	handler := wallet.New(p)
-	e.GET("/api/v1/wallets", handler.WalletHandler)
-	e.GET("/api/v1/wallets/:walletId", handler.WalletHandlerByID)
+	handler.RegisterRoutes(e)
 	e.Logger.Fatal(e.Start(":1323"))
 }

@@ -78,3 +78,16 @@ func (p *Postgres) Wallet(id uint64) (wallet.Wallet, error) {
 		CreatedAt:  w.CreatedAt,
 	}, nil
 }
+
+func (p *Postgres) CreateWallet(w wallet.WalletPayload) (int, error) {
+	queryString := "INSERT INTO user_wallet(user_id, user_name, wallet_name, wallet_type, balance) VALUES($1, $2, $3, $4, $5) RETURNING id"
+	row := p.Db.QueryRow(queryString, w.UserID, w.UserName, w.WalletName, w.WalletType, w.Balance)
+
+	var id int
+	err := row.Scan(&id)
+	if err != nil {
+		return 0, err
+	}
+
+	return id, nil
+}
