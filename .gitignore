@@ -8,3 +8,8 @@
 *.env
 .env.*
 !.env.example
+
+# build output
+out
+dist
+build
