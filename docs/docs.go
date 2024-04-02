@@ -45,19 +45,19 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/wallet.Wallet"
+                            "$ref": "#/definitions/SuccessResponse"
                         }
                     },
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "$ref": "#/definitions/wallet.Err"
+                            "$ref": "#/definitions/ErrorResponse"
                         }
                     },
                     "500": {
                         "description": "Internal Server Error",
                         "schema": {
-                            "$ref": "#/definitions/wallet.Err"
+                            "$ref": "#/definitions/ErrorResponse"
                         }
                     }
                 }
@@ -82,7 +82,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/wallet.WalletPayload"
+                            "$ref": "#/definitions/WalletPayload"
                         }
                     }
                 ],
@@ -90,19 +90,19 @@ const docTemplate = `{
                     "201": {
                         "description": "Created",
                         "schema": {
-                            "type": "string"
+                            "$ref": "#/definitions/SuccessResponse"
                         }
                     },
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "$ref": "#/definitions/wallet.Err"
+                            "$ref": "#/definitions/ErrorResponse"
                         }
                     },
                     "500": {
                         "description": "Internal Server Error",
                         "schema": {
-                            "$ref": "#/definitions/wallet.Err"
+                            "$ref": "#/definitions/ErrorResponse"
                         }
                     }
                 }
@@ -127,32 +127,33 @@ const docTemplate = `{
                         "format": "uint64",
                         "description": "Wallet Id",
                         "name": "walletId",
-                        "in": "path"
+                        "in": "path",
+                        "required": true
                     }
                 ],
                 "responses": {
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/wallet.Wallet"
+                            "$ref": "#/definitions/SuccessResponse"
                         }
                     },
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "$ref": "#/definitions/wallet.Err"
+                            "$ref": "#/definitions/ErrorResponse"
                         }
                     },
                     "404": {
                         "description": "Not Found",
                         "schema": {
-                            "$ref": "#/definitions/wallet.Err"
+                            "$ref": "#/definitions/ErrorResponse"
                         }
                     },
                     "500": {
                         "description": "Internal Server Error",
                         "schema": {
-                            "$ref": "#/definitions/wallet.Err"
+                            "$ref": "#/definitions/ErrorResponse"
                         }
                     }
                 }
@@ -175,7 +176,8 @@ const docTemplate = `{
                         "format": "uint64",
                         "description": "Wallet Id",
                         "name": "walletId",
-                        "in": "path"
+                        "in": "path",
+                        "required": true
                     },
                     {
                         "format": "WalletPayload",
@@ -184,7 +186,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/wallet.WalletPayload"
+                            "$ref": "#/definitions/WalletPayload"
                         }
                     }
                 ],
@@ -192,25 +194,25 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "type": "string"
+                            "$ref": "#/definitions/SuccessResponse"
                         }
                     },
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "$ref": "#/definitions/wallet.Err"
+                            "$ref": "#/definitions/ErrorResponse"
                         }
                     },
                     "404": {
                         "description": "Not Found",
                         "schema": {
-                            "$ref": "#/definitions/wallet.Err"
+                            "$ref": "#/definitions/ErrorResponse"
                         }
                     },
                     "500": {
                         "description": "Internal Server Error",
                         "schema": {
-                            "$ref": "#/definitions/wallet.Err"
+                            "$ref": "#/definitions/ErrorResponse"
                         }
                     }
                 }
@@ -233,32 +235,33 @@ const docTemplate = `{
                         "format": "uint64",
                         "description": "Wallet Id",
                         "name": "walletId",
-                        "in": "path"
+                        "in": "path",
+                        "required": true
                     }
                 ],
                 "responses": {
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "type": "string"
+                            "$ref": "#/definitions/SuccessResponse"
                         }
                     },
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "$ref": "#/definitions/wallet.Err"
+                            "$ref": "#/definitions/ErrorResponse"
                         }
                     },
                     "404": {
                         "description": "Not Found",
                         "schema": {
-                            "$ref": "#/definitions/wallet.Err"
+                            "$ref": "#/definitions/ErrorResponse"
                         }
                     },
                     "500": {
                         "description": "Internal Server Error",
                         "schema": {
-                            "$ref": "#/definitions/wallet.Err"
+                            "$ref": "#/definitions/ErrorResponse"
                         }
                     }
                 }
@@ -266,48 +269,25 @@ const docTemplate = `{
         }
     },
     "definitions": {
-        "wallet.Err": {
+        "ErrorResponse": {
             "type": "object",
             "properties": {
-                "message": {
+                "result": {},
+                "status": {
                     "type": "string"
                 }
             }
         },
-        "wallet.Wallet": {
+        "SuccessResponse": {
             "type": "object",
             "properties": {
-                "balance": {
-                    "type": "number",
-                    "example": 100
-                },
-                "created_at": {
-                    "type": "string",
-                    "example": "2024-03-25T14:19:00.729237Z"
-                },
-                "id": {
-                    "type": "integer",
-                    "example": 1
-                },
-                "user_id": {
-                    "type": "integer",
-                    "example": 1
-                },
-                "user_name": {
-                    "type": "string",
-                    "example": "John Doe"
-                },
-                "wallet_name": {
-                    "type": "string",
-                    "example": "John's Wallet"
-                },
-                "wallet_type": {
-                    "type": "string",
-                    "example": "Credit Card"
+                "result": {},
+                "status": {
+                    "type": "string"
                 }
             }
         },
-        "wallet.WalletPayload": {
+        "WalletPayload": {
             "type": "object",
             "required": [
                 "balance",
