@@ -1,18 +1,32 @@
 name: Go CI
 
-on: [push]
+on:
+  pull_request:
+    types:
+      - opened
+      - synchronize
 
 jobs:
-    build:
-        runs-on: ubuntu-latest
-        strategy:
-            matrix:
-                go-version: ['1.21.8', '1.22.1']
-        steps:
-            - uses: actions/checkout@v4
-            - name: Setup Go ${{ matrix.go-version }}
-              uses: actions/setup-go@v4
-              with:
-                  go-version: ${{ matrix.go-version }}
-            - name: Display Go version
-              run: go version
+  build:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        go-version: ['1.21.8', '1.22.1']
+    steps:
+      - uses: actions/checkout@v4
+      - name: Setup Go ${{ matrix.go-version }}
+        uses: actions/setup-go@v4
+        with:
+          go-version: ${{ matrix.go-version }}
+      - name: Display Go version
+        run: go version
+      - name: Install dependencies
+        run: go mod download
+      - name: Run tests
+        run: go test -race -coverprofile=test_report.txt -covermode=atomic ./wallet ./helper ./middleware # Run tests and generate test report
+      - name: Upload test coverage
+        uses: actions/upload-artifact@v2
+        with:
+          name: test-report
+          path: test_report.txt
+      
