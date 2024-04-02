@@ -12,7 +12,7 @@ type InvalidStruct struct {
 	InvalidField int `validate:"required"`
 }
 
-func TestCustomValidator_Validate(t *testing.T) {
+func TestCustomValidator(t *testing.T) {
 	t.Run("InvalidStruct: Failed", func(t *testing.T) {
 		customValidator := CustomValidator{validator: validator.New()}
 
