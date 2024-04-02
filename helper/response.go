@@ -16,23 +16,28 @@ type SuccessResponse struct {
 	Result interface{} `json:"result"`
 } // @name SuccessResponse
 
-func SuccessHandler(c echo.Context, status string, result interface{}, statusCode ...int) error {
+func SuccessHandler(c echo.Context, result interface{}, statusCode ...int) error {
 	code := http.StatusOK
 	if len(statusCode) > 0 {
 		code = statusCode[0]
 	}
 
 	response := SuccessResponse{
-		Status: status,
+		Status: "SUCCESS",
 		Result: result,
 	}
 	return c.JSON(code, response)
 }
 
-func FailedHandler(c echo.Context, status string, result interface{}, statusCode int) error {
+func FailedHandler(c echo.Context, result interface{}, statusCode ...int) error {
+	code := http.StatusBadRequest
+	if len(statusCode) > 0 {
+		code = statusCode[0]
+	}
+
 	response := ErrorResponse{
-		Status: status,
+		Status: "ERROR",
 		Result: result,
 	}
-	return c.JSON(statusCode, response)
+	return c.JSON(code, response)
 }

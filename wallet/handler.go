@@ -71,7 +71,7 @@ func (h *Handler) WalletHandler(c echo.Context) error {
 		return err
 	}
 
-	return helper.SuccessHandler(c, "SUCCESS", wallets)
+	return helper.SuccessHandler(c, wallets)
 }
 
 //	 WalletHandlerByID
@@ -97,7 +97,7 @@ func (h *Handler) WalletHandlerByID(c echo.Context) error {
 		return err
 	}
 
-	return helper.SuccessHandler(c, "SUCCESS", wallet)
+	return helper.SuccessHandler(c, wallet)
 }
 
 //	 CreateWalletHandler
@@ -127,7 +127,7 @@ func (h *Handler) CreateWalletHandler(c echo.Context) error {
 		return err
 	}
 
-	return helper.SuccessHandler(c, "SUCCESS", "the wallet was just created", http.StatusCreated)
+	return helper.SuccessHandler(c, "the wallet was just created", http.StatusCreated)
 }
 
 //		 UpdateWalletHandler
@@ -169,7 +169,7 @@ func (h *Handler) UpdateWalletHandler(c echo.Context) error {
 		return err
 	}
 
-	return helper.SuccessHandler(c, "SUCCESS", "the wallet was just updated")
+	return helper.SuccessHandler(c, "the wallet was just updated")
 }
 
 //	 DeleteWalletHandler
@@ -200,7 +200,7 @@ func (h *Handler) DeleteWalletHandler(c echo.Context) error {
 		return err
 	}
 
-	return helper.SuccessHandler(c, "SUCCESS", "the wallet was just deleted")
+	return helper.SuccessHandler(c, "the wallet was just deleted")
 }
 
 // RegisterRoutes registers the routes for the wallet handler

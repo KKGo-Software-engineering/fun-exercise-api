@@ -17,12 +17,12 @@ func ErrorHandler(next echo.HandlerFunc) echo.HandlerFunc {
 
 			switch e := err.(type) {
 			case errortype.CustomError:
-				return helper.FailedHandler(c, "ERROR", map[string]interface{}{
+				return helper.FailedHandler(c, map[string]interface{}{
 					"type":    e.Type(),
 					"message": e.Error(),
 				}, e.Status())
 			default:
-				return helper.FailedHandler(c, "ERROR", "Oops! something went wrong.", http.StatusInternalServerError)
+				return helper.FailedHandler(c, "Oops! something went wrong.", http.StatusInternalServerError)
 			}
 		}
 
