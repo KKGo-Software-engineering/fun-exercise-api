@@ -9,6 +9,7 @@ import (
 	"time"
 
 	"github.com/KKGo-Software-engineering/fun-exercise-api/helper"
+	"github.com/KKGo-Software-engineering/fun-exercise-api/middleware"
 	"github.com/labstack/echo/v4"
 	"github.com/stretchr/testify/assert"
 )
@@ -68,7 +69,7 @@ func (m *mockStorerSuccess) DeleteWallet(id uint64) (int, error) {
 type mockStorerFailure struct{}
 
 func (m *mockStorerFailure) Wallets(walletType string) ([]Wallet, error) {
-	return nil, errors.New("error fetching wallets")
+	return nil, errors.New("error forced")
 }
 
 func (m *mockStorerFailure) Wallet(id uint64) (Wallet, error) {
@@ -88,25 +89,24 @@ func (m *mockStorerFailure) DeleteWallet(id uint64) (int, error) {
 }
 
 func TestWallet(t *testing.T) {
-	t.Run("given unable to get wallets should return 500 and error message", func(t *testing.T) {
+	t.Run("Get all wallets: Internal server error", func(t *testing.T) {
 		// Setup
 		e := echo.New()
 		req := httptest.NewRequest(http.MethodGet, "/api/v1/wallets", nil)
 		rec := httptest.NewRecorder()
 		c := e.NewContext(req, rec)
-
-		h := New(&mockStorerFailure{})
+		h := middleware.ErrorHandler(New(&mockStorerFailure{}).WalletHandler)(c)
 
 		// Assertions
-		if assert.NoError(t, h.WalletHandler(c)) {
+		if assert.NoError(t, h) {
 			assert.Equal(t, http.StatusInternalServerError, rec.Code)
 
-			expectedResponse := `{"message":"error fetching wallets"}`
+			expectedResponse := `{"status":"ERROR","result":"Oops! something went wrong."}`
 			assert.JSONEq(t, expectedResponse, rec.Body.String())
 		}
 	})
 
-	t.Run("given user able to getting wallet should return list of wallets", func(t *testing.T) {
+	t.Run("Get all wallets", func(t *testing.T) {
 		// Setup
 		e := echo.New()
 		req := httptest.NewRequest(http.MethodGet, "/api/v1/wallets", nil)
@@ -118,8 +118,7 @@ func TestWallet(t *testing.T) {
 		// Assertions
 		if assert.NoError(t, h.WalletHandler(c)) {
 			assert.Equal(t, http.StatusOK, rec.Code)
-
-			expectedResponse := `[{"id":1,"balance":100,"created_at":"2024-02-03T00:00:00Z","user_id":1,"user_name":"John Doe","wallet_name":"John's Wallet","wallet_type":"Create Card"}]`
+			expectedResponse := `{"status":"SUCCESS","result": [{"id":1,"balance":100,"created_at":"2024-02-03T00:00:00Z","user_id":1,"user_name":"John Doe","wallet_name":"John's Wallet","wallet_type":"Create Card"}]}`
 			assert.JSONEq(t, expectedResponse, rec.Body.String())
 		}
 	})
@@ -131,13 +130,13 @@ func TestWallet(t *testing.T) {
 		rec := httptest.NewRecorder()
 		c := e.NewContext(req, rec)
 
-		h := New(&mockStorerFailure{})
+		h := middleware.ErrorHandler(New(&mockStorerFailure{}).WalletHandlerByID)(c)
 
 		// Assertions
-		if assert.NoError(t, h.WalletHandlerByID(c)) {
+		if assert.NoError(t, h) {
 			assert.Equal(t, http.StatusBadRequest, rec.Code)
 
-			expectedResponse := `{"message":"Wallet id is required"}`
+			expectedResponse := `{"status":"ERROR","result":{"message":"Wallet id is required","type":"ValidationError"}}`
 			assert.JSONEq(t, expectedResponse, rec.Body.String())
 		}
 	})
@@ -157,7 +156,7 @@ func TestWallet(t *testing.T) {
 		if assert.NoError(t, h.WalletHandlerByID(c)) {
 			assert.Equal(t, http.StatusOK, rec.Code)
 
-			expectedResponse := `{"id":1,"balance":100,"created_at":"2024-02-03T00:00:00Z","user_id":1,"user_name":"John Doe","wallet_name":"John's Wallet","wallet_type":"Create Card"}`
+			expectedResponse := `{"status":"SUCCESS","result": {"id":1,"balance":100,"created_at":"2024-02-03T00:00:00Z","user_id":1,"user_name":"John Doe","wallet_name":"John's Wallet","wallet_type":"Create Card"}}`
 			assert.JSONEq(t, expectedResponse, rec.Body.String())
 		}
 	})
@@ -175,12 +174,14 @@ func TestWallet(t *testing.T) {
 		rec := httptest.NewRecorder()
 		c := e.NewContext(req, rec)
 
-		h := New(&mockStorerFailure{})
+		h := middleware.ErrorHandler(New(&mockStorerFailure{}).CreateWalletHandler)(c)
 
 		// Assertions
-		if err := h.CreateWalletHandler(c); err != nil {
-			expectedResponse := echo.NewHTTPError(http.StatusBadRequest, "Field UserID is required, Field UserName is required, Field WalletName is required, Field WalletType is required, Field Balance is required")
-			assert.EqualError(t, err, expectedResponse.Error())
+		if assert.NoError(t, h) {
+			assert.Equal(t, http.StatusBadRequest, rec.Code)
+
+			expectedResponse := `{"status":"ERROR","result":{"message":"Field UserID is required, Field UserName is required, Field WalletName is required, Field WalletType is required, Field Balance is required","type":"ValidationError"}}`
+			assert.JSONEq(t, expectedResponse, rec.Body.String())
 		}
 	})
 
@@ -203,7 +204,7 @@ func TestWallet(t *testing.T) {
 		if assert.NoError(t, h.CreateWalletHandler(c)) {
 			assert.Equal(t, http.StatusCreated, rec.Code)
 
-			expectedResponse := `"the wallet was just created"`
+			expectedResponse := `{"status":"SUCCESS","result":"the wallet was just created"}`
 			assert.Equal(t, expectedResponse, strings.TrimSpace(rec.Body.String()))
 		}
 	})
@@ -223,12 +224,14 @@ func TestWallet(t *testing.T) {
 		c.SetParamNames("walletId")
 		c.SetParamValues("1")
 
-		h := New(&mockStorerFailure{})
+		h := middleware.ErrorHandler(New(&mockStorerFailure{}).UpdateWalletHandler)(c)
 
 		// Assertions
-		if err := h.UpdateWalletHandler(c); err != nil {
-			expectedResponse := echo.NewHTTPError(http.StatusBadRequest, "Field UserID is required, Field UserName is required, Field WalletName is required, Field WalletType is required, Field Balance is required")
-			assert.EqualError(t, err, expectedResponse.Error())
+		if assert.NoError(t, h) {
+			assert.Equal(t, http.StatusBadRequest, rec.Code)
+
+			expectedResponse := `{"status":"ERROR","result":{"message":"Field UserID is required, Field UserName is required, Field WalletName is required, Field WalletType is required, Field Balance is required","type":"ValidationError"}}`
+			assert.JSONEq(t, expectedResponse, rec.Body.String())
 		}
 	})
 
@@ -253,7 +256,7 @@ func TestWallet(t *testing.T) {
 		if assert.NoError(t, h.UpdateWalletHandler(c)) {
 			assert.Equal(t, http.StatusOK, rec.Code)
 
-			expectedResponse := `"the wallet was just updated"`
+			expectedResponse := `{"status":"SUCCESS","result":"the wallet was just updated"}`
 			assert.Equal(t, expectedResponse, strings.TrimSpace(rec.Body.String()))
 		}
 	})
@@ -273,13 +276,13 @@ func TestWallet(t *testing.T) {
 		c.SetParamNames("walletId")
 		c.SetParamValues("122")
 
-		h := New(&mockStorerFailure{})
+		h := middleware.ErrorHandler(New(&mockStorerFailure{}).UpdateWalletHandler)(c)
 
 		// Assertions
-		if assert.NoError(t, h.UpdateWalletHandler(c)) {
+		if assert.NoError(t, h) {
 			assert.Equal(t, http.StatusNotFound, rec.Code)
 
-			expectedResponse := `{"message":"Wallet not found"}`
+			expectedResponse := `{"status":"ERROR","result":{"message":"Wallet not found","type":"NotFoundError"}}`
 			assert.JSONEq(t, expectedResponse, rec.Body.String())
 		}
 	})
@@ -293,13 +296,13 @@ func TestWallet(t *testing.T) {
 		c.SetParamNames("walletId")
 		c.SetParamValues("122")
 
-		h := New(&mockStorerFailure{})
+		h := middleware.ErrorHandler(New(&mockStorerFailure{}).DeleteWalletHandler)(c)
 
 		// Assertions
-		if assert.NoError(t, h.DeleteWalletHandler(c)) {
+		if assert.NoError(t, h) {
 			assert.Equal(t, http.StatusNotFound, rec.Code)
 
-			expectedResponse := `{"message":"Wallet not found"}`
+			expectedResponse := `{"status":"ERROR","result":{"message":"Wallet not found","type":"NotFoundError"}}`
 			assert.JSONEq(t, expectedResponse, rec.Body.String())
 		}
 	})
@@ -319,7 +322,7 @@ func TestWallet(t *testing.T) {
 		if assert.NoError(t, h.DeleteWalletHandler(c)) {
 			assert.Equal(t, http.StatusOK, rec.Code)
 
-			expectedResponse := `"the wallet was just deleted"`
+			expectedResponse := `{"status":"SUCCESS","result":"the wallet was just deleted"}`
 			assert.Equal(t, expectedResponse, strings.TrimSpace(rec.Body.String()))
 		}
 	})
@@ -331,13 +334,13 @@ func TestWallet(t *testing.T) {
 		rec := httptest.NewRecorder()
 		c := e.NewContext(req, rec)
 
-		h := New(&mockStorerFailure{})
+		h := middleware.ErrorHandler(New(&mockStorerFailure{}).DeleteWalletHandler)(c)
 
 		// Assertions
-		if assert.NoError(t, h.DeleteWalletHandler(c)) {
+		if assert.NoError(t, h) {
 			assert.Equal(t, http.StatusBadRequest, rec.Code)
 
-			expectedResponse := `{"message":"Wallet id is required"}`
+			expectedResponse := `{"status":"ERROR","result":{"message":"Wallet id is required","type":"ValidationError"}}`
 			assert.JSONEq(t, expectedResponse, rec.Body.String())
 		}
 	})
