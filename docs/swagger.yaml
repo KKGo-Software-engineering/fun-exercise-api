@@ -1,34 +1,17 @@
 definitions:
-  wallet.Err:
+  ErrorResponse:
     properties:
-      message:
+      result: {}
+      status:
         type: string
     type: object
-  wallet.Wallet:
+  SuccessResponse:
     properties:
-      balance:
-        example: 100
-        type: number
-      created_at:
-        example: "2024-03-25T14:19:00.729237Z"
-        type: string
-      id:
-        example: 1
-        type: integer
-      user_id:
-        example: 1
-        type: integer
-      user_name:
-        example: John Doe
-        type: string
-      wallet_name:
-        example: John's Wallet
-        type: string
-      wallet_type:
-        example: Credit Card
+      result: {}
+      status:
         type: string
     type: object
-  wallet.WalletPayload:
+  WalletPayload:
     properties:
       balance:
         example: 100
@@ -79,15 +62,15 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/wallet.Wallet'
+            $ref: '#/definitions/SuccessResponse'
         "400":
           description: Bad Request
           schema:
-            $ref: '#/definitions/wallet.Err'
+            $ref: '#/definitions/ErrorResponse'
         "500":
           description: Internal Server Error
           schema:
-            $ref: '#/definitions/wallet.Err'
+            $ref: '#/definitions/ErrorResponse'
       summary: Get all wallets and filter by wallet type
       tags:
       - wallet
@@ -102,22 +85,22 @@ paths:
         name: wallet
         required: true
         schema:
-          $ref: '#/definitions/wallet.WalletPayload'
+          $ref: '#/definitions/WalletPayload'
       produces:
       - application/json
       responses:
         "201":
           description: Created
           schema:
-            type: string
+            $ref: '#/definitions/SuccessResponse'
         "400":
           description: Bad Request
           schema:
-            $ref: '#/definitions/wallet.Err'
+            $ref: '#/definitions/ErrorResponse'
         "500":
           description: Internal Server Error
           schema:
-            $ref: '#/definitions/wallet.Err'
+            $ref: '#/definitions/ErrorResponse'
       summary: Create wallet
       tags:
       - wallet
@@ -131,6 +114,7 @@ paths:
         format: uint64
         in: path
         name: walletId
+        required: true
         type: string
       produces:
       - application/json
@@ -138,19 +122,19 @@ paths:
         "200":
           description: OK
           schema:
-            type: string
+            $ref: '#/definitions/SuccessResponse'
         "400":
           description: Bad Request
           schema:
-            $ref: '#/definitions/wallet.Err'
+            $ref: '#/definitions/ErrorResponse'
         "404":
           description: Not Found
           schema:
-            $ref: '#/definitions/wallet.Err'
+            $ref: '#/definitions/ErrorResponse'
         "500":
           description: Internal Server Error
           schema:
-            $ref: '#/definitions/wallet.Err'
+            $ref: '#/definitions/ErrorResponse'
       summary: Delete wallet
       tags:
       - wallet
@@ -163,6 +147,7 @@ paths:
         format: uint64
         in: path
         name: walletId
+        required: true
         type: string
       produces:
       - application/json
@@ -170,19 +155,19 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/wallet.Wallet'
+            $ref: '#/definitions/SuccessResponse'
         "400":
           description: Bad Request
           schema:
-            $ref: '#/definitions/wallet.Err'
+            $ref: '#/definitions/ErrorResponse'
         "404":
           description: Not Found
           schema:
-            $ref: '#/definitions/wallet.Err'
+            $ref: '#/definitions/ErrorResponse'
         "500":
           description: Internal Server Error
           schema:
-            $ref: '#/definitions/wallet.Err'
+            $ref: '#/definitions/ErrorResponse'
       summary: Get wallet
       tags:
       - wallet
@@ -195,6 +180,7 @@ paths:
         format: uint64
         in: path
         name: walletId
+        required: true
         type: string
       - description: Wallet Payload
         format: WalletPayload
@@ -202,26 +188,26 @@ paths:
         name: wallet
         required: true
         schema:
-          $ref: '#/definitions/wallet.WalletPayload'
+          $ref: '#/definitions/WalletPayload'
       produces:
       - application/json
       responses:
         "200":
           description: OK
           schema:
-            type: string
+            $ref: '#/definitions/SuccessResponse'
         "400":
           description: Bad Request
           schema:
-            $ref: '#/definitions/wallet.Err'
+            $ref: '#/definitions/ErrorResponse'
         "404":
           description: Not Found
           schema:
-            $ref: '#/definitions/wallet.Err'
+            $ref: '#/definitions/ErrorResponse'
         "500":
           description: Internal Server Error
           schema:
-            $ref: '#/definitions/wallet.Err'
+            $ref: '#/definitions/ErrorResponse'
       summary: Update wallet
       tags:
       - wallet

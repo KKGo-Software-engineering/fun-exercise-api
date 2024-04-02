@@ -4,6 +4,8 @@ import (
 	"net/http"
 	"strconv"
 
+	"github.com/KKGo-Software-engineering/fun-exercise-api/errortype"
+	"github.com/KKGo-Software-engineering/fun-exercise-api/helper"
 	"github.com/labstack/echo/v4"
 )
 
@@ -23,10 +25,6 @@ func New(db Storer) *Handler {
 	return &Handler{store: db}
 }
 
-type Err struct {
-	Message string `json:"message"`
-}
-
 func (h *Handler) isValidWalletType(walletType string) bool {
 	validWalletTypes := map[string]bool{
 		"Savings":       true,
@@ -44,7 +42,7 @@ type WalletPayload struct {
 	WalletName string  `json:"wallet_name" example:"John's Wallet" validate:"required"`
 	WalletType string  `json:"wallet_type" example:"Credit Card" validate:"required"`
 	Balance    float64 `json:"balance" example:"100.00" validate:"required"`
-}
+} // @name WalletPayload
 
 //	 WalletHandler
 //		@Summary		Get all wallets and filter by wallet type
@@ -52,11 +50,11 @@ type WalletPayload struct {
 //		@Tags			wallet
 //		@Accept			json
 //		@Produce		json
-//		@Success		200	{object}	Wallet
+//		@Success		200	{object}	SuccessResponse
 //		@Router			/api/v1/wallets [get]
 //		@Param			wallet_type query string false "Filter by wallet type" Enums(Savings, Credit Card, Crypto Wallet)
-//		@Failure		400	{object}	Err
-//		@Failure		500	{object}	Err
+//		@Failure		400	{object}	ErrorResponse
+//		@Failure		500	{object}	ErrorResponse
 func (h *Handler) WalletHandler(c echo.Context) error {
 	walletType := c.QueryParam("wallet_type")
 
@@ -65,14 +63,15 @@ func (h *Handler) WalletHandler(c echo.Context) error {
 	}
 
 	if walletType != "" && !h.isValidWalletType(walletType) {
-		return c.JSON(http.StatusBadRequest, Err{Message: "Invalid wallet type"})
+		return errortype.ValidationError{Message: "Invalid wallet type"}
 	}
 
 	wallets, err := h.store.Wallets(walletType)
 	if err != nil {
-		return c.JSON(http.StatusInternalServerError, Err{Message: err.Error()})
+		return err
 	}
-	return c.JSON(http.StatusOK, wallets)
+
+	return helper.SuccessHandler(c, "SUCCESS", wallets)
 }
 
 //	 WalletHandlerByID
@@ -81,23 +80,24 @@ func (h *Handler) WalletHandler(c echo.Context) error {
 //		@Tags			wallet
 //		@Accept			json
 //		@Produce		json
-//		@Success		200	{object}	Wallet
+//		@Success		200	{object}	SuccessResponse
 //		@Router			/api/v1/wallets/{walletId} [get]
-//		@Param			walletId path string false "Wallet Id" Format(uint64)
-//		@Failure		400	{object}	Err
-//		@Failure		404	{object}	Err
-//		@Failure		500	{object}	Err
+//		@Param			walletId path string true "Wallet Id" Format(uint64)
+//		@Failure		400	{object}	ErrorResponse
+//		@Failure		404	{object}	ErrorResponse
+//		@Failure		500	{object}	ErrorResponse
 func (h *Handler) WalletHandlerByID(c echo.Context) error {
 	id, _ := strconv.ParseUint(c.Param("walletId"), 0, 64)
 	if id == 0 {
-		return c.JSON(http.StatusBadRequest, Err{Message: "Wallet id is required"})
+		return errortype.ValidationError{Message: "Wallet id is required"}
 	}
 
 	wallet, err := h.store.Wallet(id)
 	if err != nil {
-		return c.JSON(http.StatusInternalServerError, Err{Message: err.Error()})
+		return err
 	}
-	return c.JSON(http.StatusOK, wallet)
+
+	return helper.SuccessHandler(c, "SUCCESS", wallet)
 }
 
 //	 CreateWalletHandler
@@ -106,16 +106,17 @@ func (h *Handler) WalletHandlerByID(c echo.Context) error {
 //		@Tags			wallet
 //		@Accept			json
 //		@Produce		json
-//		@Success		201	{object}	string
+//		@Success		201	{object}	SuccessResponse
 //		@Router			/api/v1/wallets [post]
 //		@Param			wallet body WalletPayload true "Wallet Payload" Format(WalletPayload)
-//		@Failure		400	{object}	Err
-//		@Failure		500	{object}	Err
+//		@Failure		400	{object}	ErrorResponse
+//		@Failure		500	{object}	ErrorResponse
 func (h *Handler) CreateWalletHandler(c echo.Context) error {
 	var wallet WalletPayload
 	var err error
 	if err = c.Bind(&wallet); err != nil {
-		return echo.NewHTTPError(http.StatusBadRequest, err.Error())
+		// return echo.NewHTTPError(http.StatusBadRequest, err.Error())
+		return errortype.ValidationError{Message: err.Error()}
 	}
 
 	if err = c.Validate(&wallet); err != nil {
@@ -123,11 +124,10 @@ func (h *Handler) CreateWalletHandler(c echo.Context) error {
 	}
 
 	if _, err := h.store.CreateWallet(wallet); err != nil {
-		return c.JSON(http.StatusInternalServerError, Err{Message: err.Error()})
+		return err
 	}
 
-	createdResponse := "the wallet was just created"
-	return c.JSON(http.StatusCreated, createdResponse)
+	return helper.SuccessHandler(c, "SUCCESS", "the wallet was just created", http.StatusCreated)
 }
 
 //		 UpdateWalletHandler
@@ -136,24 +136,24 @@ func (h *Handler) CreateWalletHandler(c echo.Context) error {
 //			@Tags			wallet
 //			@Accept			json
 //			@Produce		json
-//			@Success		200	{object}	string
+//			@Success		200	{object}	SuccessResponse
 //			@Router			/api/v1/wallets/{walletId} [put]
-//	    @Param			walletId path string false "Wallet Id" Format(uint64)
+//	    @Param			walletId path string true "Wallet Id" Format(uint64)
 //			@Param			wallet body WalletPayload true "Wallet Payload" Format(WalletPayload)
-//			@Failure		400	{object}	Err
-//			@Failure		404	{object}	Err
-//			@Failure		500	{object}	Err
+//			@Failure		400	{object}	ErrorResponse
+//			@Failure		404	{object}	ErrorResponse
+//			@Failure		500	{object}	ErrorResponse
 func (h *Handler) UpdateWalletHandler(c echo.Context) error {
 	id, _ := strconv.ParseUint(c.Param("walletId"), 0, 64)
 	if id == 0 {
-		return c.JSON(http.StatusBadRequest, Err{Message: "Wallet id is required"})
+		return errortype.ValidationError{Message: "Wallet id is required"}
 	}
 
 	var wallet WalletPayload
 	var err error
 
 	if err = c.Bind(&wallet); err != nil {
-		return echo.NewHTTPError(http.StatusBadRequest, err.Error())
+		return err
 	}
 
 	if err = c.Validate(&wallet); err != nil {
@@ -161,18 +161,15 @@ func (h *Handler) UpdateWalletHandler(c echo.Context) error {
 	}
 
 	// Find wallet by id before updating
-	_, err = h.store.Wallet(id)
-
-	if err != nil {
-		return c.JSON(http.StatusNotFound, Err{Message: "Wallet not found"})
+	if _, err = h.store.Wallet(id); err != nil {
+		return errortype.NotFoundError{Message: "Wallet not found"}
 	}
 
 	if _, err := h.store.UpdateWallet(id, wallet); err != nil {
-		return c.JSON(http.StatusInternalServerError, Err{Message: err.Error()})
+		return err
 	}
 
-	updatedResponse := "the wallet was just updated"
-	return c.JSON(http.StatusOK, updatedResponse)
+	return helper.SuccessHandler(c, "SUCCESS", "the wallet was just updated")
 }
 
 //	 DeleteWalletHandler
@@ -181,30 +178,29 @@ func (h *Handler) UpdateWalletHandler(c echo.Context) error {
 //		@Tags			wallet
 //		@Accept			json
 //		@Produce		json
-//		@Success		200	{object}	string
+//		@Success		200	{object}	SuccessResponse
 //		@Router			/api/v1/wallets/{walletId} [delete]
-//		@Param			walletId path string false "Wallet Id" Format(uint64)
-//		@Failure		400	{object}	Err
-//		@Failure		404	{object}	Err
-//		@Failure		500	{object}	Err
+//		@Param			walletId path string true "Wallet Id" Format(uint64)
+//		@Failure		400	{object}	ErrorResponse
+//		@Failure		404	{object}	ErrorResponse
+//		@Failure		500	{object}	ErrorResponse
 func (h *Handler) DeleteWalletHandler(c echo.Context) error {
 	id, _ := strconv.ParseUint(c.Param("walletId"), 0, 64)
 	if id == 0 {
-		return c.JSON(http.StatusBadRequest, Err{Message: "Wallet id is required"})
+		return errortype.ValidationError{Message: "Wallet id is required"}
 	}
 
 	// Find wallet by id before deleting
 	if _, err := h.store.Wallet(id); err != nil {
-		return c.JSON(http.StatusNotFound, Err{Message: "Wallet not found"})
+		return errortype.NotFoundError{Message: "Wallet not found"}
 	}
 
 	// Delete wallet
 	if _, err := h.store.DeleteWallet(id); err != nil {
-		return c.JSON(http.StatusInternalServerError, Err{Message: err.Error()})
+		return err
 	}
 
-	deletedResponse := "the wallet was just deleted"
-	return c.JSON(http.StatusOK, deletedResponse)
+	return helper.SuccessHandler(c, "SUCCESS", "the wallet was just deleted")
 }
 
 // RegisterRoutes registers the routes for the wallet handler

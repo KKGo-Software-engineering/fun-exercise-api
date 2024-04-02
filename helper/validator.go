@@ -2,11 +2,10 @@ package helper
 
 import (
 	"fmt"
-	"net/http"
 	"strings"
 
+	"github.com/KKGo-Software-engineering/fun-exercise-api/errortype"
 	"github.com/go-playground/validator/v10"
-	"github.com/labstack/echo/v4"
 )
 
 type CustomValidator struct {
@@ -20,7 +19,7 @@ func (cv *CustomValidator) Validate(req interface{}) error {
 			errorMsg := fmt.Sprintf("Field %s is required", e.Field())
 			message = append(message, errorMsg)
 		}
-		return echo.NewHTTPError(http.StatusBadRequest, strings.Join(message, ", "))
+		return errortype.ValidationError{Message: strings.Join(message, ", ")}
 	}
 
 	return nil
